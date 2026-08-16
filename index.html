@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="mai">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>तिरहुता लिपि - शिक्षण मञ्च</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Tirhuta:wght@400;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    
+    <!-- Font for Tirhuta script -->
+    <style>
+        @font-face {
+            font-family: 'Mithilauni';
+            src: url('https://lipi.maithili.org.in/fonts/Mithilauni.ttf') format('truetype');
+            font-display: swap;
+        }
+    </style>
+    
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <!-- ===== HEADER ===== -->
+    <header id="appHeader">
+        <div class="container header-container">
+            <div class="logo" onclick="navigateTo('home')">
+                <span class="logo-icon">𑒀</span>
+                <span><span class="tirhuta">तिरहुता</span> <span class="tirhuta">लिपि</span></span>
+            </div>
+            <div class="header-right">
+                <button class="theme-btn" id="themeBtn" title="रात्रि/दिन मोड">
+                    <i class="fas fa-moon" id="themeIcon"></i>
+                </button>
+                
+                <div id="authSection">
+                    <button class="auth-btn" onclick="openAuthModal('login')">
+                        <i class="fas fa-user"></i> <span>लॉगिन</span>
+                    </button>
+                </div>
+                <div class="user-menu" id="userMenu" style="display:none;">
+                    <button class="user-btn" id="userMenuBtn">
+                        <span class="avatar" id="userAvatar">सा</span>
+                        <span id="userNameDisplay">साधक</span>
+                        <i class="fas fa-chevron-down" style="font-size:0.5rem;opacity:0.6;"></i>
+                    </button>
+                    <div class="user-dropdown" id="userDropdown">
+                        <a onclick="navigateTo('home')"><i class="fas fa-home"></i> मुख्यपृष्ठ</a>
+                        <a onclick="navigateTo('practice')"><i class="fas fa-pen-fancy"></i> अभ्यास</a>
+                        <a onclick="navigateTo('progress')"><i class="fas fa-chart-simple"></i> प्रगति</a>
+                        <a onclick="navigateTo('exam')"><i class="fas fa-clipboard-question"></i> परीक्षा</a>
+                        <a onclick="navigateTo('certificate')"><i class="fas fa-award"></i> प्रमाणपत्र</a>
+                        <div class="divider"></div>
+                        <a id="menuAdmin" style="display:none;" onclick="navigateTo('admin')"><i class="fas fa-user-shield"></i> एडमिन</a>
+                        <a onclick="logoutUser()"><i class="fas fa-sign-out-alt"></i> लॉगआउट</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== NAV TABS ===== -->
+    <nav class="nav-tabs" id="navTabs">
+        <button class="nav-tab active" onclick="navigateTo('home')" data-page="home">
+            <i class="fas fa-home"></i> <span>मुख्य</span>
+        </button>
+        <button class="nav-tab" onclick="navigateTo('practice')" data-page="practice">
+            <i class="fas fa-pen-fancy"></i> <span>अभ्यास</span>
+            <span class="badge" id="learnBadge">0%</span>
+        </button>
+        <button class="nav-tab" onclick="navigateTo('progress')" data-page="progress">
+            <i class="fas fa-chart-simple"></i> <span>प्रगति</span>
+        </button>
+        <button class="nav-tab" onclick="navigateTo('exam')" data-page="exam">
+            <i class="fas fa-clipboard-question"></i> <span>परीक्षा</span>
+        </button>
+        <button class="nav-tab" onclick="navigateTo('certificate')" data-page="certificate">
+            <i class="fas fa-award"></i> <span>प्रमाण</span>
+        </button>
+    </nav>
+
+    <!-- ===== AUTH MODAL ===== -->
+    <div class="auth-modal" id="authModal">
+        <div class="auth-box">
+            <button class="close-modal" onclick="closeAuthModal()">&times;</button>
+            <h2><span class="tirhuta">𑒞𑒱𑒩𑒯𑒳𑒞𑒰 𑒪𑒱𑒣𑒱</span></h2>
+            <p class="subtitle" id="authSubtitle">लॉगिन करी आ सीखना शुरू करी</p>
+
+            <div id="authError" class="form-error"></div>
+            <div id="authSuccess" class="form-success"></div>
+
+            <form id="authForm" onsubmit="handleAuth(event)">
+                <div id="nameField" class="form-group" style="display:none;">
+                    <label>पूरा नाम</label>
+                    <input type="text" id="authName" placeholder="अपन पूरा नाम" />
+                </div>
+                <div class="form-group">
+                    <label>ईमेल</label>
+                    <input type="email" id="authEmail" placeholder="अपन ईमेल" required />
+                </div>
+                <div class="form-group">
+                    <label>पासवर्ड</label>
+                    <input type="password" id="authPassword" placeholder="न्यूनतम 6 अंक" required minlength="6" />
+                </div>
+                <button type="submit" class="btn btn-primary btn-block btn-lg" id="authSubmitBtn">
+                    <i class="fas fa-sign-in-alt"></i> लॉगिन करी
+                </button>
+            </form>
+
+            <div class="auth-switch" id="authSwitch">
+                <span onclick="toggleAuthMode()">नव छी?</span> खाता बनाउ
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <div class="container">
+
+        <!-- HOME PAGE -->
+        <div class="page active" id="homePage">
+            <div class="hero">
+                <h1><span class="tirhuta">𑒞𑒱𑒩𑒯𑒳𑒞𑒰</span> <span class="highlight"><span class="tirhuta">𑒪𑒱𑒣𑒱</span></span></h1>
+                <p>तिरहुता (मिथिलाक्षर) लिपि सीखबाक आधुनिक, इंटरैक्टिव, आ पूर्णतः निःशुल्क मञ्च। १२०+ अक्षर, लेखन अभ्यास, परीक्षा, आ प्रमाणपत्र।</p>
+                <div class="hero-stats">
+                    <div class="stat"><span class="number" id="heroTotal">१२२</span><span class="label">कुल अक्षर</span></div>
+                    <div class="stat"><span class="number" id="heroDone">०</span><span class="label">सीखल</span></div>
+                    <div class="stat"><span class="number" id="heroPercent">०%</span><span class="label">प्रगति</span></div>
+                    <div class="stat"><span class="number" id="heroUsers">०</span><span class="label">उपयोगकर्ता</span></div>
+                </div>
+                <div class="hero-actions">
+                    <button class="btn btn-lg" onclick="navigateTo('practice')"><i class="fas fa-play"></i> अभी सीखी</button>
+                    <button class="btn btn-secondary btn-lg" onclick="navigateTo('exam')"><i class="fas fa-clipboard-check"></i> परीक्षा दी</button>
+                </div>
+            </div>
+
+            <div class="dashboard-grid" id="dashboardStats">
+                <div class="stat-card"><div class="icon"><i class="fas fa-font"></i></div><div class="number" id="statTotal">१२२</div><div class="label">कुल अक्षर</div></div>
+                <div class="stat-card"><div class="icon"><i class="fas fa-check-circle"></i></div><div class="number" id="statDone">०</div><div class="label">पूर्ण</div></div>
+                <div class="stat-card"><div class="icon"><i class="fas fa-fire"></i></div><div class="number" id="statStreak">०</div><div class="label">लगातार दिन</div></div>
+                <div class="stat-card"><div class="icon"><i class="fas fa-clock"></i></div><div class="number" id="statTime">०m</div><div class="label">कुल समय</div></div>
+                <div class="stat-card"><div class="icon"><i class="fas fa-calendar-day"></i></div><div class="number" id="statLast">—</div><div class="label">अंतिम अभ्यास</div></div>
+                <div class="stat-card"><div class="icon"><i class="fas fa-trophy"></i></div><div class="number" id="statProgress">०%</div><div class="label">पूर्णता</div></div>
+            </div>
+
+            <div style="margin-top:24px;">
+                <div class="card-title"><i class="fas fa-graduation-cap"></i> अहाँक कोर्स</div>
+                <div class="course-grid">
+                    <div class="course-card" onclick="navigateTo('practice')">
+                        <div class="course-icon"><i class="fas fa-sun"></i></div>
+                        <div class="course-title">दैनिक अभ्यास</div>
+                        <div class="course-desc">रोज ५ नव अक्षर सीखी</div>
+                        <div class="course-progress"><div class="progress-bar"><div class="fill" id="dailyProgress" style="width:0%;"></div></div><div class="progress-text"><span id="dailyText">०/५</span> आजु</div></div>
+                    </div>
+                    <div class="course-card" onclick="navigateTo('progress')">
+                        <div class="course-icon"><i class="fas fa-calendar-alt"></i></div>
+                        <div class="course-title">मासिक पाठ्यक्रम</div>
+                        <div class="course-desc">३० दिनमे पूरा लिपि</div>
+                        <div class="course-progress"><div class="progress-bar"><div class="fill" id="monthlyProgress" style="width:0%;"></div></div><div class="progress-text"><span id="monthlyText">०/१२२</span> अक्षर</div></div>
+                    </div>
+                    <div class="course-card" onclick="navigateTo('exam')">
+                        <div class="course-icon"><i class="fas fa-clipboard-check"></i></div>
+                        <div class="course-title">परीक्षा प्रशिक्षण</div>
+                        <div class="course-desc">१० प्रश्नक टेस्ट दी</div>
+                        <div class="course-progress"><div class="progress-bar"><div class="fill" id="examProgress" style="width:0%;"></div></div><div class="progress-text"><span id="examText">०/१०</span> पूर्ण</div></div>
+                    </div>
+                    <div class="course-card" onclick="navigateTo('certificate')">
+                        <div class="course-icon"><i class="fas fa-award"></i></div>
+                        <div class="course-title">प्रमाणपत्र</div>
+                        <div class="course-desc">परीक्षा पास करी आ प्रमाणपत्र प्राप्त करी</div>
+                        <div class="course-progress"><div class="progress-bar"><div class="fill" id="certProgress" style="width:0%;"></div></div><div class="progress-text"><span id="certText">०%</span> पास</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PRACTICE PAGE -->
+        <div class="page" id="practicePage">
+            <div class="flex-between" style="flex-wrap:wrap;gap:12px;margin-bottom:16px;">
+                <div>
+                    <h1 style="font-size:1.3rem;font-weight:800;color:var(--text);"><i class="fas fa-pen-fancy" style="color:var(--gold);"></i> अभ्यास</h1>
+                    <p style="color:var(--text-secondary);font-size:0.85rem;">उंगली या माउस सँ लिखी</p>
+                </div>
+                <button class="btn btn-secondary btn-sm" onclick="navigateTo('home')"><i class="fas fa-arrow-left"></i> वापस</button>
+            </div>
+
+            <div class="practice-card">
+                <div class="practice-header">
+                    <div class="char-display" id="currentChar">𑒀</div>
+                    <div class="char-name" id="charName">𑒀 - अज्जी</div>
+                    <div class="char-counter" id="charCounter">१ / १२२</div>
+                </div>
+                <div class="practice-body">
+                    <div class="char-info-grid">
+                        <div class="char-info-item"><div class="label">उच्चारण</div><div class="value" id="charPronounce">𑒀 (Ajji)</div></div>
+                        <div class="char-info-item"><div class="label">वर्ग</div><div class="value" id="charCategory">पवित्र</div></div>
+                        <div class="char-info-item"><div class="label">स्ट्रोक</div><div class="value" id="charStrokes">४ स्ट्रोक</div></div>
+                        <div class="char-info-item"><div class="label">उदाहरण</div><div class="value" id="charExample">प्रारम्भमे अज्जी</div></div>
+                    </div>
+
+                    <div class="stroke-guide" id="strokeGuide">
+                        <span class="stroke-step active"><i class="fas fa-arrow-down"></i> नीचा</span>
+                        <span class="stroke-step"><i class="fas fa-arrow-right"></i> दहिना</span>
+                        <span class="stroke-step"><i class="fas fa-arrow-up"></i> ऊपर</span>
+                        <span class="stroke-step"><i class="fas fa-arrow-left"></i> बायाँ</span>
+                    </div>
+
+                    <div class="canvas-wrapper">
+                        <div class="canvas-container">
+                            <canvas id="practiceCanvas"></canvas>
+                            <div class="canvas-hint"><i class="fas fa-hand-pointer"></i> उंगली या माउस सँ लिखी</div>
+                        </div>
+                    </div>
+
+                    <div class="practice-toolbar">
+                        <button class="btn btn-secondary btn-sm" id="undoBtn"><i class="fas fa-undo"></i> पूर्व</button>
+                        <button class="btn btn-secondary btn-sm" id="redoBtn"><i class="fas fa-redo"></i> बाद</button>
+                        <button class="btn btn-secondary btn-sm" id="clearCanvas"><i class="fas fa-eraser"></i> साफ</button>
+                        <button class="btn btn-primary btn-sm" id="savePractice"><i class="fas fa-save"></i> सहेजी</button>
+                        <button class="btn btn-secondary btn-sm" id="prevChar"><i class="fas fa-chevron-left"></i> पिछला</button>
+                        <button class="btn btn-gold btn-sm" id="nextChar">अगला <i class="fas fa-chevron-right"></i></button>
+                    </div>
+
+                    <div class="practice-status">
+                        <span class="status" id="practiceStatus">✍️ उंगली या माउस सँ लिखी</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PROGRESS PAGE -->
+        <div class="page" id="progressPage">
+            <div class="flex-between" style="flex-wrap:wrap;gap:12px;margin-bottom:16px;">
+                <div>
+                    <h1 style="font-size:1.3rem;font-weight:800;color:var(--text);"><i class="fas fa-chart-simple" style="color:var(--gold);"></i> प्रगति</h1>
+                    <p style="color:var(--text-secondary);font-size:0.85rem;">अहाँक सीखबाक यात्रा</p>
+                </div>
+                <button class="btn btn-secondary btn-sm" onclick="navigateTo('home')"><i class="fas fa-arrow-left"></i> वापस</button>
+            </div>
+            <div class="card">
+                <div class="card-title"><i class="fas fa-chart-line"></i> प्रगति सारांश</div>
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;">
+                    <div style="background:var(--bg);padding:14px;border-radius:var(--radius-sm);text-align:center;">
+                        <div style="font-size:1.6rem;font-weight:800;color:var(--primary);" id="progDone">०</div>
+                        <div style="font-size:0.7rem;color:var(--text-secondary);">पूर्ण</div>
+                    </div>
+                    <div style="background:var(--bg);padding:14px;border-radius:var(--radius-sm);text-align:center;">
+                        <div style="font-size:1.6rem;font-weight:800;color:var(--primary);" id="progTotal">१२२</div>
+                        <div style="font-size:0.7rem;color:var(--text-secondary);">कुल</div>
+                    </div>
+                    <div style="background:var(--bg);padding:14px;border-radius:var(--radius-sm);text-align:center;">
+                        <div style="font-size:1.6rem;font-weight:800;color:var(--primary);" id="progPercent">०%</div>
+                        <div style="font-size:0.7rem;color:var(--text-secondary);">प्रगति</div>
+                    </div>
+                    <div style="background:var(--bg);padding:14px;border-radius:var(--radius-sm);text-align:center;">
+                        <div style="font-size:1.6rem;font-weight:800;color:var(--primary);" id="progRemaining">१२२</div>
+                        <div style="font-size:0.7rem;color:var(--text-secondary);">शेष</div>
+                    </div>
+                </div>
+                <div style="margin-top:16px;">
+                    <div style="width:100%;height:8px;background:var(--border);border-radius:var(--radius-full);overflow:hidden;">
+                        <div class="fill" id="progressFill" style="height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-light));border-radius:var(--radius-full);transition:width 0.8s ease;width:0%;"></div>
+                    </div>
+                </div>
+                <div style="margin-top:16px;">
+                    <div style="font-weight:600;font-size:0.85rem;margin-bottom:8px;">अक्षर ग्रिड</div>
+                    <div class="char-grid" id="charGrid"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- EXAM PAGE -->
+        <div class="page" id="examPage">
+            <div class="flex-between" style="flex-wrap:wrap;gap:12px;margin-bottom:16px;">
+                <div>
+                    <h1 style="font-size:1.3rem;font-weight:800;color:var(--text);"><i class="fas fa-clipboard-question" style="color:var(--gold);"></i> परीक्षा</h1>
+                    <p style="color:var(--text-secondary);font-size:0.85rem;">७०%+ स्कोर पर प्रमाणपत्र मिलत</p>
+                </div>
+                <button class="btn btn-secondary btn-sm" onclick="navigateTo('home')"><i class="fas fa-arrow-left"></i> वापस</button>
+            </div>
+            <div class="card">
+                <div id="examContent">
+                    <div class="exam-question"><strong>प्रश्न:</strong> <span id="examQuestionText">कौन अक्षर अछि?</span></div>
+                    <div class="exam-options" id="examOptions"></div>
+                    <div class="exam-feedback" id="examFeedback"></div>
+                    <div style="display:flex;gap:8px;margin-top:14px;justify-content:center;flex-wrap:wrap;">
+                        <button class="btn btn-primary" id="examNextBtn">अगला <i class="fas fa-arrow-right"></i></button>
+                        <button class="btn btn-secondary" id="examResetBtn"><i class="fas fa-rotate"></i> पुनः</button>
+                    </div>
+                    <div class="exam-result" id="examResult"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CERTIFICATE PAGE -->
+        <div class="page" id="certificatePage">
+            <div class="flex-between" style="flex-wrap:wrap;gap:12px;margin-bottom:16px;">
+                <div>
+                    <h1 style="font-size:1.3rem;font-weight:800;color:var(--text);"><i class="fas fa-award" style="color:var(--gold);"></i> प्रमाणपत्र</h1>
+                    <p style="color:var(--text-secondary);font-size:0.85rem;" id="certStatus">परीक्षा पास करी</p>
+                </div>
+                <button class="btn btn-secondary btn-sm" onclick="navigateTo('home')"><i class="fas fa-arrow-left"></i> वापस</button>
+            </div>
+            <div class="card">
+                <div class="certificate-preview" id="certificatePreview">
+                    <div class="cert-heading"><span class="tirhuta">𑒞𑒱𑒩𑒯𑒳𑒞𑒰 𑒪𑒱𑒣𑒱</span></div>
+                    <div class="cert-sub">✦ प्रमाणपत्र ✦</div>
+                    <div class="cert-name" id="certName">साधक</div>
+                    <div class="cert-detail" id="certDistrict">𑒧𑒱𑒟𑒱𑒪𑒰</div>
+                    <div class="cert-detail" id="certScore">स्कोर: —</div>
+                    <div class="cert-detail" style="font-size:0.7rem;color:var(--text-muted);"><span id="certDate">—</span></div>
+                    <div class="cert-stamp">✦ ✦ ✦</div>
+                </div>
+                <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:16px;">
+                    <button class="btn btn-primary" id="downloadCert"><i class="fas fa-file-pdf"></i> PDF</button>
+                    <button class="btn btn-gold" id="shareCert"><i class="fas fa-share-alt"></i> शेयर</button>
+                    <button class="btn btn-secondary" onclick="window.print()"><i class="fas fa-print"></i> प्रिंट</button>
+                </div>
+                <div id="certMessage" style="text-align:center;margin-top:12px;color:var(--text-secondary);font-size:0.8rem;"></div>
+            </div>
+        </div>
+
+        <!-- ADMIN PAGE -->
+        <div class="page" id="adminPage">
+            <div class="flex-between" style="flex-wrap:wrap;gap:12px;margin-bottom:16px;">
+                <div>
+                    <h1 style="font-size:1.3rem;font-weight:800;color:var(--text);"><i class="fas fa-user-shield" style="color:var(--gold);"></i> एडमिन पैनल</h1>
+                    <p style="color:var(--text-secondary);font-size:0.85rem;">सब उपयोगकर्ताक डेटा</p>
+                </div>
+                <button class="btn btn-secondary btn-sm" onclick="navigateTo('home')"><i class="fas fa-arrow-left"></i> वापस</button>
+            </div>
+            <div class="card">
+                <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center;">
+                    <button class="btn btn-primary btn-sm" onclick="refreshAdminData()"><i class="fas fa-sync"></i> रिफ्रेश</button>
+                    <span style="margin-left:auto;font-size:0.8rem;color:var(--text-secondary);" id="adminTotalUsers">कुल उपयोगकर्ता: ०</span>
+                </div>
+                <div class="admin-table-wrap">
+                    <table class="admin-table">
+                        <thead><tr><th>#</th><th>नाम</th><th>ईमेल</th><th>प्रगति</th><th>परीक्षा</th><th>प्रमाण</th><th>अंतिम</th></tr></thead>
+                        <tbody id="adminTableBody"><tr><td colspan="7" style="text-align:center;padding:30px;color:var(--text-muted);">कोनो डेटा नै</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ===== TOAST ===== -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <i class="fas fa-om"></i> <span class="tirhuta">𑒞𑒱𑒩𑒯𑒳𑒞𑒰 𑒪𑒱𑒣𑒱</span> · मिथिलाक्षर शिक्षण मञ्च
+        <span style="display:block;font-size:0.65rem;margin-top:4px;color:var(--text-muted);">❤️ सँ बनल · सब अधिकार सुरक्षित</span>
+    </footer>
+
+    <!-- ===== SCRIPTS ===== -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script src="data/alphabet.js"></script>
+    <script src="app.js"></script>
+
+</body>
+</html>
